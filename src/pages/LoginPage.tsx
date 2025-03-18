@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "react-router";
 
 const signInSchema = z.object({
   email: z
@@ -25,7 +26,7 @@ type SignInSchema = z.infer<typeof signInSchema>;
 
 const LoginPage = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const form = useForm<SignInSchema>({
+  const { register, handleSubmit, formState } = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
   });
 
@@ -33,35 +34,38 @@ const LoginPage = () => {
     setIsShowPassword((state) => !state);
   };
 
-  const handleSignInUser = (values: SignInSchema) => {
-    alert("Form Submitted!");
+  const onSubmit = handleSubmit((values) => {
+    alert(
+      `Form Submitted! email: ${values.email}, password: ${values.password}`
+    );
     console.log(values);
-  };
+  });
 
   return (
     <>
-      <div className="box-border flex justify-center items-center flex-col w-full h-lvh font-lexend bg-stone-100">
-        <div className="shadow-2xl flex justify-center items-center flex-col w-1/3 p-8 rounded-2xl relative bg-white">
-          <div className="text-center flex flex-col items-center gap-6">
-            <img
-              src={logoTaskMaster}
-              alt="Logo Task Master"
-              className="w-1/8"
-            />
-            <h1 className="text-3xl text-primary">Task Master</h1>
-            <h4 className="text-xl text-secondary">
-              Welcome back Master!{" "}
-              <span className="whitespace-nowrap">
-                Please Login to Continue
-              </span>
-            </h4>
-          </div>
+      <div className="box-border flex justify-center items-center flex-col min-h-screen font-lexend bg-stone-100">
+        <form onSubmit={onSubmit}>
+          <div className="shadow-2xl flex justify-center items-center flex-col p-8 rounded-2xl relative bg-white">
+            <div className="text-center flex flex-col items-center gap-6">
+              <img
+                src={logoTaskMaster}
+                alt="Logo Task Master"
+                className="w-1/8"
+              />
+              <h1 className="text-3xl text-primary">Task Master</h1>
+              <h4 className="text-xl text-secondary">
+                Welcome back Master!{" "}
+                <span className="whitespace-nowrap">
+                  Please{" "}
+                  <span className="underline underline-offset-8 text-primary">
+                    Sign In
+                  </span>{" "}
+                  to Continue
+                </span>
+              </h4>
+            </div>
 
-          <div className="my-8 w-full">
-            <form
-              className="flex flex-col gap-1"
-              onSubmit={form.handleSubmit(handleSignInUser)}
-            >
+            <div className="my-8 flex flex-col w-full gap-2">
               <label htmlFor="email" className="text-secondary">
                 Email
               </label>
@@ -70,13 +74,13 @@ const LoginPage = () => {
                 type="email"
                 placeholder="Email"
                 className="border-2 border-tertiary py-3 px-6 rounded-lg  outline-primary"
-                {...form.register("email")}
+                {...register("email")}
               />
               <span className="text-red-600">
-                {form.formState.errors.email?.message}
+                {formState.errors.email?.message}
               </span>
 
-              <label htmlFor="password" className="mt-4 text-secondary">
+              <label htmlFor="password" className=" text-secondary">
                 Password
               </label>
               <div className="flex flex-col justify-center">
@@ -85,7 +89,7 @@ const LoginPage = () => {
                   type={isShowPassword ? "text" : "password"}
                   placeholder="Password"
                   className="border-2 py-3 px-6 rounded-lg border-tertiary outline-primary"
-                  {...form.register("password")}
+                  {...register("password")}
                 />
 
                 <button
@@ -97,7 +101,7 @@ const LoginPage = () => {
                 </button>
               </div>
               <span className="text-red-600">
-                {form.formState.errors.password?.message}
+                {formState.errors.password?.message}
               </span>
 
               <div className="flex justify-between items-center mt-6 text-secondary sm:flex-col sm:items-start sm:gap-3 xl:flex-row ">
@@ -116,22 +120,21 @@ const LoginPage = () => {
                 </a>
               </div>
 
-              <button className="border-2 w-full py-3 mt-6 rounded-lg bg-primary text-white hover:bg-slate-700">
+              <button className="border-2 w-full py-3 mt-6 rounded-lg bg-primary text-white hover:bg-slate-700 cursor-pointer">
                 Sign In
               </button>
-            </form>
-          </div>
+            </div>
 
-          <div className="flex flex-col w-full items-center">
-            <div className="flex items-center gap-1 sm:flex-col lg:flex-row">
-              <h5 className="my-1 text-secondary">Don't have an Account?</h5>
-              <a href="#" className="hover:text-slate-700">
-                {" "}
-                Sign Up
-              </a>
+            <div className="flex flex-col w-full items-center">
+              <div className="flex items-center gap-1 sm:flex-col lg:flex-row">
+                <h5 className="my-1 text-secondary">Don't have an Account?</h5>
+                <Link to="/signUp" className="hover:text-slate-700">
+                  Sign Up
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </>
   );
