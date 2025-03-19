@@ -3,14 +3,9 @@ import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
-// type signUpSchema = {
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   password: string;
-//   confirmPassword: string;
-// };
 const signUpSchema = z
   .object({
     firstName: z
@@ -33,7 +28,7 @@ const signUpSchema = z
       .min(8, { message: "Password must contain at least 8 character(s)" })
       .max(64, { message: "Password must contain at most 64 character(s)" })
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .regex(/[a-b]/, "Password must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
       .regex(/[0-9]/, "Password must contain at least one number")
       .regex(/[\W_]/, "Password must contain at least one special character"),
     confirmPassword: z.string(),
@@ -46,6 +41,7 @@ const signUpSchema = z
 type SignUpSchema = z.infer<typeof signUpSchema>;
 
 const SignUpPage = () => {
+  const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
   });
@@ -56,6 +52,10 @@ const SignUpPage = () => {
     alert("Form Sign Up Submitted!");
     console.log(values);
   });
+
+  const handleShowPassword = () => {
+    setIsShowPassword((state) => !state);
+  };
 
   return (
     <>
@@ -82,7 +82,7 @@ const SignUpPage = () => {
             </div>
 
             <div className="flex flex-col justify-center gap-2 mt-8">
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1">
                 <div className="grid grid-cols-2 gap-4 text-secondary">
                   <label htmlFor="firstName">First Name</label>
                   <label htmlFor="lastName">Last Name</label>
@@ -129,13 +129,22 @@ const SignUpPage = () => {
               <label htmlFor="password" className="text-secondary">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                placeholder="Password"
-                className="border-2 py-3 px-4 rounded-lg border-tertiary outline-primary"
-                {...register("password")}
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={isShowPassword ? "text" : "password"}
+                  id="password"
+                  placeholder="Password"
+                  className="border-2 py-3 px-4 rounded-lg border-tertiary outline-primary w-full"
+                  {...register("password")}
+                />
+                <button
+                  type="button"
+                  onClick={handleShowPassword}
+                  className="absolute flex right-4"
+                >
+                  {isShowPassword ? <Eye size={30} /> : <EyeOff size={30} />}
+                </button>
+              </div>
               <span className="text-red-500">
                 {formState.errors.password?.message}
               </span>
@@ -143,13 +152,23 @@ const SignUpPage = () => {
               <label htmlFor="confirmPassword" className="text-secondary">
                 Confirm Password
               </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                placeholder="Confirm Password"
-                className="border-2 py-3 px-4 rounded-lg border-tertiary outline-primary"
-                {...register("confirmPassword")}
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={isShowPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  placeholder="Confirm Password"
+                  className="border-2 py-3 px-4 rounded-lg border-tertiary outline-primary w-full"
+                  {...register("confirmPassword")}
+                />
+
+                <button
+                  type="button"
+                  onClick={handleShowPassword}
+                  className="absolute flex right-4 "
+                >
+                  {isShowPassword ? <Eye size={30} /> : <EyeOff size={30} />}
+                </button>
+              </div>
               <span className="text-red-500">
                 {formState.errors.confirmPassword?.message}
               </span>

@@ -17,7 +17,7 @@ const signInSchema = z.object({
     .min(8, { message: "Password must contain at least 8 character(s)" })
     .max(64, { message: "Password must contain at most 64 character(s)" })
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-b]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[0-9]/, "Password must contain at least one number")
     .regex(/[\W_]/, "Password must contain at least one special character"),
 });
@@ -25,7 +25,7 @@ const signInSchema = z.object({
 type SignInSchema = z.infer<typeof signInSchema>;
 
 const LoginPage = () => {
-  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
   const { register, handleSubmit, formState } = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
   });
@@ -45,7 +45,7 @@ const LoginPage = () => {
     <>
       <div className="box-border flex justify-center items-center flex-col min-h-screen font-lexend bg-stone-100">
         <form onSubmit={onSubmit}>
-          <div className="shadow-2xl flex justify-center items-center flex-col p-8 rounded-2xl relative bg-white">
+          <div className="shadow-2xl flex justify-center items-center flex-col p-8 rounded-2xl bg-white">
             <div className="text-center flex flex-col items-center gap-6">
               <img
                 src={logoTaskMaster}
@@ -83,19 +83,19 @@ const LoginPage = () => {
               <label htmlFor="password" className=" text-secondary">
                 Password
               </label>
-              <div className="flex flex-col justify-center">
+              <div className="relative items-center flex">
                 <input
                   id="password"
                   type={isShowPassword ? "text" : "password"}
                   placeholder="Password"
-                  className="border-2 py-3 px-6 rounded-lg border-tertiary outline-primary"
+                  className="border-2 py-3 px-6 w-full rounded-lg border-tertiary outline-primary"
                   {...register("password")}
                 />
 
                 <button
                   onClick={handleShowPassword}
                   type="button"
-                  className="absolute right-12 flex items-center cursor-pointer"
+                  className="absolute right-4 cursor-pointer"
                 >
                   {isShowPassword ? <Eye size={30} /> : <EyeOff size={30} />}
                 </button>
