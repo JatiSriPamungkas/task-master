@@ -8,3 +8,14 @@
   --color-secondary: oklch(0.444 0.011 73.639);
   --color-tertiary: oklch(0.709 0.01 56.259);
 }
+
+@layer utilities {
+  .text-image {
+    background: url("./assets/harmony_of_space_.jpg");
+    background-position: center;
+    background-size: cover;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

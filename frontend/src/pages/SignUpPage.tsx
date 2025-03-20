@@ -8,13 +8,13 @@ import { useState } from "react";
 
 const signUpSchema = z
   .object({
-    firstName: z
+    first_name: z
       .string()
       .min(1, { message: "First Name must contain at least 1 character(s)" })
       .max(255, {
         message: "First Name must contain at most 255 character(s)",
       }),
-    lastName: z
+    last_name: z
       .string()
       .min(1, { message: "Last Name must contain at least 1 character(s)" })
       .max(255, { message: "Last Name must contain at most 255 character(s)" }),
@@ -46,9 +46,22 @@ const SignUpPage = () => {
     resolver: zodResolver(signUpSchema),
   });
 
-  const { register, handleSubmit, formState } = form;
+  const { register, handleSubmit, formState, reset } = form;
+
+  const createNewUser = async (values: SignUpSchema) => {
+    await fetch("http://localhost:3000/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+
+    reset();
+  };
 
   const onSubmit = handleSubmit((values) => {
+    createNewUser(values);
     alert("Form Sign Up Submitted!");
     console.log(values);
   });
@@ -94,21 +107,21 @@ const SignUpPage = () => {
                     id="firstName"
                     placeholder="John"
                     className="border-2 py-3 px-4 rounded-lg border-tertiary outline-primary"
-                    {...register("firstName")}
+                    {...register("first_name")}
                   />
                   <input
                     type="text"
                     id="lastName"
                     placeholder="Doe"
                     className="border-2 py-3 px-4 rounded-lg border-tertiary outline-primary"
-                    {...register("lastName")}
+                    {...register("last_name")}
                   />
                 </div>
                 <span className="text-red-500">
-                  {formState.errors.firstName?.message}
+                  {formState.errors.first_name?.message}
                 </span>
                 <span className="text-red-500">
-                  {formState.errors.lastName?.message}
+                  {formState.errors.last_name?.message}
                 </span>
               </div>
 
