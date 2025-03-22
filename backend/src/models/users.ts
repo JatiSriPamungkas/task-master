@@ -1,8 +1,9 @@
 import { dbPool } from "../config/database";
+import { RowDataPacket } from "mysql2";
 
 type CreateUserSchema = {
-  first_name: string;
-  last_name: string;
+  first_name?: string;
+  last_name?: string;
   email: string;
   password: string;
 };
@@ -18,6 +19,17 @@ export const createNewUser = (body: CreateUserSchema) => {
                     VALUES ('${body.first_name}', '${body.last_name}', '${body.email}', '${body.password}')`;
 
   return dbPool.execute(SQLQuery);
+};
+
+export const findUserByEmail = async (email: string) => {
+  const SQLQuery = `SELECT * FROM users WHERE email = ?`;
+
+  const [rows] = await dbPool.execute<(CreateUserSchema & RowDataPacket)[]>(
+    SQLQuery,
+    [email]
+  );
+
+  return rows[0];
 };
 
 export const deleteUser = (idUser: string) => {

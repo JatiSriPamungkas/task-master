@@ -26,7 +26,7 @@ type SignInSchema = z.infer<typeof signInSchema>;
 
 const LoginPage = () => {
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
-  const { register, handleSubmit, formState } = useForm<SignInSchema>({
+  const { register, handleSubmit, formState, reset } = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
   });
 
@@ -34,11 +34,21 @@ const LoginPage = () => {
     setIsShowPassword((state) => !state);
   };
 
-  const onSubmit = handleSubmit((values) => {
-    alert(
-      `Form Submitted! email: ${values.email}, password: ${values.password}`
-    );
-    console.log(values);
+  const matchLogin = async (values: SignInSchema) => {
+    await fetch("http://localhost:3000/api/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
+  };
+
+  const onSubmit = handleSubmit(async (values) => {
+    const check = await matchLogin(values);
+
+    alert("Form Submitted!");
+    console.log(check);
+
+    reset();
   });
 
   return (
