@@ -45,16 +45,14 @@ export const checkLoginUser = async (req: Request, res: Response) => {
       });
     }
 
-    if (isMatch) {
-      res.status(200).json({
-        message: "User found!",
-        data: {
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-        },
-      });
-    }
+    res.status(200).json({
+      message: "User found!",
+      data: {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+      },
+    });
   } catch (error) {
     res.status(500).json({
       message: "POST: matching user failed!",

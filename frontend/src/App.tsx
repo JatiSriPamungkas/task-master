@@ -1,7 +1,7 @@
 import "./App.css";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import SignUpPage from "./pages/SignUpPage";
+import SignUpPage from "./pages/RegisterPage";
 import { Routes, Route } from "react-router";
 import TestingPage from "./pages/TestingPage";
 import HomePage from "./pages/HomePage";

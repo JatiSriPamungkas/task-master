@@ -84,7 +84,7 @@ const SignUpPage = () => {
               />
               <h1 className="text-3xl text-primary">Task Master</h1>
               <h4 className="text-xl text-secondary">
-                Welcome back Master!{" "}
+                Welcome Master!{" "}
                 <span className="whitespace-nowrap">
                   Please{" "}
                   <span className="underline underline-offset-8 text-primary">
@@ -194,7 +194,7 @@ const SignUpPage = () => {
 
             <div className="flex gap-2 mt-4">
               <p className="text-secondary">Already have an Account?</p>{" "}
-              <Link to="/signIn" className="hover:text-slate-700">
+              <Link to="/login" className="hover:text-slate-700">
                 Sign In
               </Link>
             </div>

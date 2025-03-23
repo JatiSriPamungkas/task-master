@@ -15,12 +15,11 @@ const NotFoundPage = () => {
           </span>
         </p>
         <Link
-          to="/signIn"
+          to="/"
           className="text-center border-2 w-1/5 py-3 rounded-lg bg-primary text-white hover:bg-slate-700"
         >
           Back to Home
         </Link>
-        ;
       </div>
     </>
   );

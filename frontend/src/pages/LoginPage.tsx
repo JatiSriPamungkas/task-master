@@ -35,18 +35,27 @@ const LoginPage = () => {
   };
 
   const matchLogin = async (values: SignInSchema) => {
-    await fetch("http://localhost:3000/api/users/login", {
+    const response = await fetch("http://localhost:3001/api/users/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Login Success!", data);
+      window.location.href = "/";
+    } else {
+      console.log("Login Failed!", data.message);
+    }
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    const check = await matchLogin(values);
+    await matchLogin(values);
 
     alert("Form Submitted!");
-    console.log(check);
+    console.log(values);
 
     reset();
   });
@@ -138,7 +147,7 @@ const LoginPage = () => {
             <div className="flex flex-col w-full items-center">
               <div className="flex items-center gap-1 sm:flex-col lg:flex-row">
                 <h5 className="my-1 text-secondary">Don't have an Account?</h5>
-                <Link to="/signUp" className="hover:text-slate-700">
+                <Link to="/register" className="hover:text-slate-700">
                   Sign Up
                 </Link>
               </div>
