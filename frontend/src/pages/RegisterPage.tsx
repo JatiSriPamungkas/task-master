@@ -49,7 +49,7 @@ const SignUpPage = () => {
   const { register, handleSubmit, formState, reset } = form;
 
   const createNewUser = async (values: SignUpSchema) => {
-    await fetch("http://localhost:3000/api/users", {
+    const response = await fetch("http://localhost:3001/api/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +57,14 @@ const SignUpPage = () => {
       body: JSON.stringify(values),
     });
 
-    reset();
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log(data);
+      window.location.href = "/";
+    } else {
+      console.log("Register Failed!", data.message);
+    }
   };
 
   const onSubmit = handleSubmit((values) => {
@@ -65,6 +72,8 @@ const SignUpPage = () => {
 
     alert("Form Sign Up Submitted!");
     console.log(values);
+
+    reset();
   });
 
   const handleShowPassword = () => {

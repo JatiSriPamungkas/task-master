@@ -16,14 +16,10 @@ const PORT = process.env.PORT || 3001;
 app.use("/api/users", userRouter);
 app.use("/api/lists", listRouter);
 
-app.use("/home", (req, res) => {
-  res.send("<h1>Home Page BACKEND<h1/>");
-});
-
 app.use((req, res) => {
   res.send("<h1>Page Not Found!<h1/>");
 });
 
 app.listen(PORT, () => {
-  console.log(`Listening at http://localhost:${PORT}/home`);
+  console.log(`Listening at http://localhost:${PORT}/api/users`);
 });

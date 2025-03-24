@@ -26,6 +26,8 @@ type SignInSchema = z.infer<typeof signInSchema>;
 
 const LoginPage = () => {
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const { register, handleSubmit, formState, reset } = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
   });
@@ -44,18 +46,17 @@ const LoginPage = () => {
     const data = await response.json();
 
     if (response.ok) {
-      console.log("Login Success!", data);
-      window.location.href = "/";
+      return (window.location.href = "/");
     } else {
-      console.log("Login Failed!", data.message);
+      return (
+        setErrorMessage(`Login Failed! ${data.message}`),
+        console.log("Login Failed!", data.message)
+      );
     }
   };
 
   const onSubmit = handleSubmit(async (values) => {
     await matchLogin(values);
-
-    alert("Form Submitted!");
-    console.log(values);
 
     reset();
   });
@@ -154,6 +155,7 @@ const LoginPage = () => {
             </div>
           </div>
         </form>
+        <p className="text-red-500 mt-10">{errorMessage}</p>
       </div>
     </>
   );

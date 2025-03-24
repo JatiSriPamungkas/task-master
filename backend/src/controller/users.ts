@@ -29,20 +29,23 @@ export const checkLoginUser = async (req: Request, res: Response) => {
       res.status(404).json({
         message: "User can not be found!",
       });
+      return;
     }
 
     if (!user.password) {
       res.status(400).json({
         message: "Password not found!",
       });
+      return;
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch: boolean = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       res.status(401).json({
         message: "Invalid Credentials!",
       });
+      return;
     }
 
     res.status(200).json({
@@ -58,6 +61,7 @@ export const checkLoginUser = async (req: Request, res: Response) => {
       message: "POST: matching user failed!",
       serveMessage: error,
     });
+    return;
   }
 };
 
@@ -78,11 +82,13 @@ export const createNewUser = async (req: Request, res: Response) => {
       message: "POST: create user succeeded!",
       data: body,
     });
+    return;
   } catch (error) {
     res.status(500).json({
       message: "GET: create user failed!",
       serveMessage: error,
     });
+    return;
   }
 };
 
