@@ -1,4 +1,3 @@
-import "./App.css";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SignUpPage from "./pages/RegisterPage";
