@@ -6,6 +6,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router";
 
+// type UserSchema = {
+//   id_user: string;
+//   first_name: string;
+//   last_name: string;
+//   email: string;
+//   password: string;
+// };
+
 const signInSchema = z.object({
   email: z
     .string()
@@ -36,6 +44,18 @@ const LoginPage = () => {
     setIsShowPassword((state) => !state);
   };
 
+  // const storeIDUser = async (values: SignInSchema) => {
+  //   const response = await fetch("http://localhost:3001/api/users/login", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(values),
+  //   });
+
+  //   const data = await response.json();
+
+  //   console.log(data);
+  // };
+
   const matchLogin = async (values: SignInSchema) => {
     const response = await fetch("http://localhost:3001/api/users/login", {
       method: "POST",
@@ -45,8 +65,13 @@ const LoginPage = () => {
 
     const data = await response.json();
 
+    const dataJSON = data.data.id_user;
+
+    localStorage.setItem("id_user", dataJSON);
+
     if (response.ok) {
       return (window.location.href = "/");
+      // return console.log(dataJSON);
     } else {
       return (
         setErrorMessage(`Login Failed! ${data.message}`),

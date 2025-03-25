@@ -11,14 +11,43 @@ import {
   Plus,
 } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+type AddTaskSchema = {
+  name_list?: string;
+};
 
 const HomePage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [task, setTask] = useState<string>("");
+  // const [task, setTask] = useState<string>("");
 
-  const handleSubmit = () => {
-    console.log("testing");
+  const { register, handleSubmit, reset } = useForm();
+
+  const createNewList = async (id_user: string, values: AddTaskSchema) => {
+    const { name_list } = values;
+
+    const response = await fetch("http://localhost:3001/api/lists", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id_user, name_list }),
+    });
+
+    const data = await response.json();
+
+    const dataJSON = data.data;
+
+    console.log(dataJSON);
   };
+
+  const onSubmit = handleSubmit((values) => {
+    const idUser = localStorage.getItem("id_user");
+
+    createNewList(idUser!, values);
+
+    // console.log(values);
+
+    reset();
+  });
 
   return (
     <>
@@ -159,12 +188,12 @@ const HomePage = () => {
             <div className="w-100 bg-white px-8 py-6 rounded-2xl">
               <h2 className="text-xl font-bold">Add New Task</h2>
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={onSubmit}>
                 <div className="flex flex-col items-end mt-8 ">
                   <input
                     type="text"
                     className="border-2 border-primary rounded-lg py-2 px-4 w-full"
-                    onChange={(e) => setTask(e.target.value)}
+                    {...register("name_list")}
                   />
                   <div className="mt-4 flex gap-6">
                     <button

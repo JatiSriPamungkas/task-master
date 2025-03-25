@@ -2,6 +2,7 @@ import { dbPool } from "../config/database";
 import { RowDataPacket } from "mysql2";
 
 type CreateUserSchema = {
+  id_user?: string;
   first_name?: string;
   last_name?: string;
   email: string;
