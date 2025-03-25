@@ -10,7 +10,7 @@ import {
   Check,
   Plus,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 type AddTaskSchema = {
@@ -19,7 +19,7 @@ type AddTaskSchema = {
 
 const HomePage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  // const [task, setTask] = useState<string>("");
+  const [name, setName] = useState<string>("");
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -39,15 +39,32 @@ const HomePage = () => {
     console.log(dataJSON);
   };
 
+  const getActiveUser = async () => {
+    const idUser = localStorage.getItem("id_user");
+
+    const response = await fetch(`http://localhost:3001/api/users/${idUser}`);
+
+    const data = await response.json();
+
+    const { first_name, last_name } = data.data[0];
+
+    const nameUser = `${first_name} ${last_name}`;
+
+    setName(nameUser);
+    console.log(first_name + " " + last_name);
+  };
+
   const onSubmit = handleSubmit((values) => {
     const idUser = localStorage.getItem("id_user");
 
     createNewList(idUser!, values);
 
-    // console.log(values);
-
     reset();
   });
+
+  useEffect(() => {
+    getActiveUser();
+  }, []);
 
   return (
     <>
@@ -103,7 +120,7 @@ const HomePage = () => {
           <div className="m-12 grow-50">
             <div className="flex flex-col gap-4">
               <h1 className="text-4xl text-primary">
-                Welcome back, Master Jati
+                Welcome back, Master {name}
               </h1>
               <p className="text-xl text-secondary">
                 Here's your overview task for today!

@@ -4,11 +4,14 @@ import {
   createNewUser,
   deleteUser,
   checkLoginUser,
+  getActiveUser,
 } from "../controller/users";
 
 export const router = Router();
 
 router.get("/", getAllUser);
+
+router.get("/:idUser", getActiveUser);
 
 router.post("/", createNewUser);
 

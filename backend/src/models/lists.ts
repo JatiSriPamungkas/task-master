@@ -5,15 +5,21 @@ type CreateListSchema = {
   id_user: number;
 };
 
-export const getAllList = () => {
+export const getAllLists = () => {
   const SQLQuery = "SELECT * FROM lists";
 
   return dbPool.execute(SQLQuery);
 };
 
-export const createNewList = (body: CreateListSchema) => {
+export const createNewLists = (body: CreateListSchema) => {
   const SQLQuery = `INSERT INTO lists (name_list, id_user) 
                     VALUES ('${body.name_list}', ${body.id_user})`;
+
+  return dbPool.execute(SQLQuery);
+};
+
+export const deleteLists = (IDList: string) => {
+  const SQLQuery = `DELETE FROM lists WHERE id_list=${IDList}`;
 
   return dbPool.execute(SQLQuery);
 };

@@ -33,6 +33,12 @@ export const findUserByEmail = async (email: string) => {
   return rows[0];
 };
 
+export const getActiveUsers = (idUser: string) => {
+  const SQLQuery = `SELECT * FROM users WHERE id_user=${idUser}`;
+
+  return dbPool.execute(SQLQuery);
+};
+
 export const deleteUser = (idUser: string) => {
   const SQLQuery = `DELETE FROM users WHERE id_user=${idUser}`;
 

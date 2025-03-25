@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { findUserByEmail, getAllUser as getAllUsers } from "../models/users";
+import {
+  findUserByEmail,
+  getActiveUsers,
+  getAllUser as getAllUsers,
+} from "../models/users";
 import { createNewUser as createNewUsers } from "../models/users";
 import { deleteUser as deleteUsers } from "../models/users";
 import bcrypt from "bcrypt";
@@ -14,6 +18,24 @@ export const getAllUser = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       message: "GET: read user failed!",
+      serveMessage: error,
+    });
+  }
+};
+
+export const getActiveUser = async (req: Request, res: Response) => {
+  const { idUser } = req.params;
+
+  try {
+    const [data] = await getActiveUsers(idUser);
+
+    res.status(200).json({
+      message: "GET: active user success!",
+      data: data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "GET: active user failed!",
       serveMessage: error,
     });
   }

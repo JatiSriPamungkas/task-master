@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 type ListSchema = {
-  id_list: number;
+  id_list: string;
   name_list: string;
-  id_user: number;
+  id_user: string;
 };
 
 type UserSchema = {
@@ -36,6 +36,23 @@ const TestingPage = () => {
     }
   };
 
+  const deleteList = async (idList: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/lists/${idList}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+
+      console.log(data);
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+
+  // GET METHOD
   const handleFetchUser = async () => {
     try {
       const response = await fetch("http://localhost:3001/api/users", {
@@ -65,9 +82,15 @@ const TestingPage = () => {
     }
   };
 
+  // HANDLE THINGS
   const handleDeleteUser = async (idUser: string) => {
     await deleteUser(idUser);
     await handleFetchUser();
+  };
+
+  const handleDeleteList = async (idList: string) => {
+    await deleteList(idList);
+    await handleFetchLists();
   };
 
   return (
@@ -102,7 +125,6 @@ const TestingPage = () => {
                       <button
                         onClick={() => handleDeleteUser(user.id_user)}
                         className="hover:bg-gray-300 p-2 w-full"
-                        disabled
                       >
                         Delete
                       </button>
@@ -139,7 +161,10 @@ const TestingPage = () => {
                     <td className="border-2 px-2">{list.name_list}</td>
                     <td className="border-2 text-center">{list.id_user}</td>
                     <td className="border-2 border-black text-red-500">
-                      <button className="hover:bg-gray-300 p-2 w-full">
+                      <button
+                        onClick={() => handleDeleteList(list.id_list)}
+                        className="hover:bg-gray-300 p-2 w-full"
+                      >
                         Delete
                       </button>
                     </td>

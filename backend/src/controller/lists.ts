@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { getAllList, createNewList } from "../models/lists";
+import { getAllLists, createNewLists, deleteLists } from "../models/lists";
 
 export const getLists = async (req: Request, res: Response) => {
   try {
-    const [data] = await getAllList();
+    const [data] = await getAllLists();
     res.status(200).json({
       message: "GET: get lists success!",
       data: data,
@@ -20,14 +20,30 @@ export const createList = async (req: Request, res: Response) => {
   const body = req.body;
 
   try {
-    await createNewList(body);
+    await createNewLists(body);
     res.status(200).json({
       message: "POST lists success!",
       data: body,
     });
   } catch (error) {
     res.status(500).json({
-      message: "GET lists failed!",
+      message: "POST lists failed!",
+      serveMessage: error,
+    });
+  }
+};
+
+export const deleteList = async (req: Request, res: Response) => {
+  const { IDList } = req.params;
+
+  try {
+    await deleteLists(IDList);
+    res.status(200).json({
+      message: "DELETE list success!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "DELETE lists failed!",
       serveMessage: error,
     });
   }

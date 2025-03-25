@@ -61,7 +61,7 @@ const SignUpPage = () => {
 
     if (response.ok) {
       console.log(data);
-      window.location.href = "/";
+      window.location.href = "/login";
     } else {
       console.log("Register Failed!", data.message);
     }
