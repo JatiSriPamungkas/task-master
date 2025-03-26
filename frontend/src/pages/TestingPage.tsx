@@ -17,6 +17,7 @@ type UserSchema = {
 const TestingPage = () => {
   const [users, setUsers] = useState<UserSchema[]>([]);
   const [lists, setList] = useState<ListSchema[]>([]);
+  const [isEmpty, setIsEmpty] = useState<boolean>(false);
 
   // DELETE METHOD
   const deleteUser = async (idUser: string) => {
@@ -76,7 +77,13 @@ const TestingPage = () => {
       const data = await response.json();
       const dataJSON = data.data;
 
-      setList(dataJSON);
+      if (dataJSON.length > 0) {
+        setList(dataJSON);
+
+        setIsEmpty(false);
+      } else {
+        setIsEmpty(true);
+      }
     } catch (error) {
       alert(`Error: ${error}`);
     }
@@ -104,7 +111,7 @@ const TestingPage = () => {
           <h1 className="text-2xl font-bold my-2">Table Users</h1>
 
           <table>
-            <thead className="">
+            <thead>
               <tr className="border-2">
                 <th className="border-2 px-20">Name User</th>
                 <th className="px-7">Act</th>
@@ -173,6 +180,8 @@ const TestingPage = () => {
               })}
             </tbody>
           </table>
+
+          {isEmpty && <p className="text-red-500 mx-40 mt-5">List is Empty</p>}
 
           <button
             onClick={handleFetchLists}

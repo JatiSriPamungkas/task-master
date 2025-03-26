@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
-import { getAllLists, createNewLists, deleteLists } from "../models/lists";
+import {
+  getAllLists,
+  createNewLists,
+  deleteLists,
+  getTotalTask,
+} from "../models/lists";
 
 export const getLists = async (req: Request, res: Response) => {
   try {
@@ -11,6 +16,24 @@ export const getLists = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       message: "GET: get lists failed!",
+      serveMessage: error,
+    });
+  }
+};
+
+export const getTotalTaskUser = async (req: Request, res: Response) => {
+  const { idUser } = req.params;
+
+  try {
+    const [data] = await getTotalTask(idUser);
+
+    res.status(200).json({
+      message: "GET total user success!",
+      data: data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "GET total user failed!",
       serveMessage: error,
     });
   }
@@ -34,12 +57,13 @@ export const createList = async (req: Request, res: Response) => {
 };
 
 export const deleteList = async (req: Request, res: Response) => {
-  const { IDList } = req.params;
+  const { idList } = req.params;
 
   try {
-    await deleteLists(IDList);
+    await deleteLists(idList);
     res.status(200).json({
       message: "DELETE list success!",
+      data: null,
     });
   } catch (error) {
     res.status(500).json({

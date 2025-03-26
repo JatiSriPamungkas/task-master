@@ -70,9 +70,6 @@ const SignUpPage = () => {
   const onSubmit = handleSubmit((values) => {
     createNewUser(values);
 
-    alert("Form Sign Up Submitted!");
-    console.log(values);
-
     reset();
   });
 

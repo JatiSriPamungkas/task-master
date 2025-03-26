@@ -19,3 +19,7 @@
     -webkit-text-fill-color: transparent;
   }
 }
+
+.custom-box {
+  @apply flex gap-2 py-4 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer;
+}

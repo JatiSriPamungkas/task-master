@@ -20,25 +20,12 @@ type AddTaskSchema = {
 const HomePage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
+  const [totalTask, setTotalTask] = useState<string>("");
+  const [trigger, setTrigger] = useState<boolean>(false);
 
   const { register, handleSubmit, reset } = useForm();
 
-  const createNewList = async (id_user: string, values: AddTaskSchema) => {
-    const { name_list } = values;
-
-    const response = await fetch("http://localhost:3001/api/lists", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id_user, name_list }),
-    });
-
-    const data = await response.json();
-
-    const dataJSON = data.data;
-
-    console.log(dataJSON);
-  };
-
+  // GET METHOD
   const getActiveUser = async () => {
     const idUser = localStorage.getItem("id_user");
 
@@ -54,6 +41,37 @@ const HomePage = () => {
     console.log(first_name + " " + last_name);
   };
 
+  const getTotalTaskUser = async () => {
+    const idUser = localStorage.getItem("id_user");
+
+    const response = await fetch(`http://localhost:3001/api/lists/${idUser}`, {
+      method: "GET",
+    });
+
+    const data = await response.json();
+
+    const dataJSON = data.data;
+
+    const count = Object.keys(dataJSON).length;
+
+    setTotalTask(count.toString());
+  };
+
+  // POST METHOD
+  const createNewList = async (id_user: string, values: AddTaskSchema) => {
+    const { name_list } = values;
+
+    await fetch("http://localhost:3001/api/lists", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id_user, name_list }),
+    });
+
+    setTrigger((state) => !state);
+
+    alert("Task has been added!");
+  };
+
   const onSubmit = handleSubmit((values) => {
     const idUser = localStorage.getItem("id_user");
 
@@ -64,7 +82,8 @@ const HomePage = () => {
 
   useEffect(() => {
     getActiveUser();
-  }, []);
+    getTotalTaskUser();
+  }, [trigger]);
 
   return (
     <>
@@ -93,23 +112,23 @@ const HomePage = () => {
           {/* ASIDE SECTION */}
           <div className="w-90 bg-white px-8 py-2 border-r-2 border-slate-200 grow-1">
             <ul className="flex flex-col gap-2 text-xl text-slate-600">
-              <li className="flex gap-2 py-4 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer">
+              <li className="custom-box">
                 <House width={50} />
                 <button className="cursor-pointer">Dashboard</button>
               </li>
-              <li className="flex gap-2 py-4 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer">
+              <li className="custom-box">
                 <CalendarDays width={50} />
                 <button className="cursor-pointer">Calendar</button>
               </li>
-              <li className="flex gap-2 py-4 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer">
+              <li className="custom-box">
                 <ListTodo width={50} />
                 <button className="cursor-pointer">Task</button>
               </li>
-              <li className="flex gap-2 py-4 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer">
+              <li className="custom-box">
                 <ChartNoAxesColumn width={50} />
                 <button className="cursor-pointer">Analytics</button>
               </li>
-              <li className="flex gap-2 py-4 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer">
+              <li className="custom-box">
                 <Settings width={50} />
                 <button className="cursor-pointer">Settings</button>
               </li>
@@ -132,7 +151,7 @@ const HomePage = () => {
                   <h3>Total Task</h3>
                   <ListTodo width={25} />
                 </div>
-                <h1 className="text-6xl">99</h1>
+                <h1 className="text-6xl">{totalTask}</h1>
               </div>
               <div className="flex flex-col border-2 border-slate-300 border-solid grow-1 justify-center min-h-32 gap-5 bg-white  p-6 rounded-2xl">
                 <div className="flex justify-between">

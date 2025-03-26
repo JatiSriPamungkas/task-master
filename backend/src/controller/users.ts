@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import {
   findUserByEmail,
-  getActiveUsers,
+  getIdUsers,
   getAllUser as getAllUsers,
 } from "../models/users";
 import { createNewUser as createNewUsers } from "../models/users";
@@ -27,7 +27,7 @@ export const getActiveUser = async (req: Request, res: Response) => {
   const { idUser } = req.params;
 
   try {
-    const [data] = await getActiveUsers(idUser);
+    const [data] = await getIdUsers(idUser);
 
     res.status(200).json({
       message: "GET: active user success!",
