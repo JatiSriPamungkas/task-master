@@ -33,10 +33,7 @@ export const createNewUser = (body: CreateUserSchema) => {
 export const findUserByEmail = async (email: string) => {
   const SQLQuery = `SELECT * FROM users WHERE email = ?`;
 
-  const [rows] = await dbPool.execute<(CreateUserSchema & RowDataPacket)[]>(
-    SQLQuery,
-    [email]
-  );
+  const [rows] = await dbPool.execute<(CreateUserSchema & RowDataPacket)[]>(SQLQuery,[email]);
 
   return rows[0];
 };

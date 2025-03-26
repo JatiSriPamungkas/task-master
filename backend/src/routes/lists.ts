@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createList,
   deleteList,
+  getInProgressTaskUser,
   getLists,
   getTotalTaskUser,
 } from "../controller/lists";
@@ -10,7 +11,9 @@ export const router = Router();
 
 router.get("/", getLists);
 
-router.get("/:idUser", getTotalTaskUser);
+router.get("/totalTask/:idUser", getTotalTaskUser);
+
+router.get("/inProgresstask/:idUser", getInProgressTaskUser);
 
 router.post("/", createList);
 

@@ -21,6 +21,8 @@ const HomePage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [totalTask, setTotalTask] = useState<string>("");
+  const [totalInProgress, setTotalInProgress] = useState<string>("");
+  const [totalCompleted, setTotalCompleted] = useState<string>("");
   const [trigger, setTrigger] = useState<boolean>(false);
 
   const { register, handleSubmit, reset } = useForm();
@@ -44,9 +46,12 @@ const HomePage = () => {
   const getTotalTaskUser = async () => {
     const idUser = localStorage.getItem("id_user");
 
-    const response = await fetch(`http://localhost:3001/api/lists/${idUser}`, {
-      method: "GET",
-    });
+    const response = await fetch(
+      `http://localhost:3001/api/lists/totalTask/${idUser}`,
+      {
+        method: "GET",
+      }
+    );
 
     const data = await response.json();
 
@@ -55,6 +60,46 @@ const HomePage = () => {
     const count = Object.keys(dataJSON).length;
 
     setTotalTask(count.toString());
+
+    console.log(dataJSON);
+  };
+
+  const getInProgressTaskUser = async () => {
+    const idUser = localStorage.getItem("id_user");
+
+    const response = await fetch(
+      `http://localhost:3001/api/lists/inProgresstask/${idUser}?is_in_progress=true`,
+      {
+        method: "GET",
+      }
+    );
+
+    const data = await response.json();
+
+    const dataJSON = data.data;
+
+    const count = Object.keys(dataJSON).length;
+    console.log(dataJSON);
+    setTotalInProgress(count.toString());
+  };
+
+  const getCompleteTaskUser = async () => {
+    const idUser = localStorage.getItem("id_user");
+
+    const response = await fetch(
+      `http://localhost:3001/api/lists/inProgresstask/${idUser}?is_in_progress=false`,
+      {
+        method: "GET",
+      }
+    );
+
+    const data = await response.json();
+
+    const dataJSON = data.data;
+
+    const count = Object.keys(dataJSON).length;
+    console.log(dataJSON);
+    setTotalCompleted(count.toString());
   };
 
   // POST METHOD
@@ -83,6 +128,8 @@ const HomePage = () => {
   useEffect(() => {
     getActiveUser();
     getTotalTaskUser();
+    getInProgressTaskUser();
+    getCompleteTaskUser();
   }, [trigger]);
 
   return (
@@ -158,14 +205,14 @@ const HomePage = () => {
                   <h3>In Progress</h3>
                   <Loader width={25} />
                 </div>
-                <h1 className="text-6xl">99</h1>
+                <h1 className="text-6xl">{totalInProgress}</h1>
               </div>
               <div className="flex flex-col border-2 border-slate-300 border-solid grow-1 justify-center min-h-32 gap-5 bg-white p-6 rounded-2xl">
                 <div className="flex justify-between">
                   <h3>Completed</h3>
                   <Check width={25} />
                 </div>
-                <h1 className="text-6xl">99</h1>
+                <h1 className="text-6xl">{totalCompleted}</h1>
               </div>
             </div>
 
