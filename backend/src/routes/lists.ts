@@ -5,6 +5,7 @@ import {
   getInProgressTaskUser,
   getLists,
   getTotalTaskUser,
+  updatePriorityUser,
 } from "../controller/lists";
 
 export const router = Router();
@@ -18,3 +19,5 @@ router.get("/inProgresstask/:idUser", getInProgressTaskUser);
 router.post("/", createList);
 
 router.delete("/:idList", deleteList);
+
+router.patch("/update-priority/:idList", updatePriorityUser);

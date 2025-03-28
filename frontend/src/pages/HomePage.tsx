@@ -10,11 +10,19 @@ import {
   Check,
   Plus,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 type AddTaskSchema = {
   name_list?: string;
+};
+
+type ListSchema = {
+  id_list: string;
+  name_list: string;
+  id_user: string;
+  is_in_progress: boolean;
+  priority: string;
 };
 
 const HomePage = () => {
@@ -24,98 +32,161 @@ const HomePage = () => {
   const [totalInProgress, setTotalInProgress] = useState<string>("");
   const [totalCompleted, setTotalCompleted] = useState<string>("");
   const [trigger, setTrigger] = useState<boolean>(false);
+  const [isCheck, setIsCheck] = useState<boolean>(false);
+  const [selectedPriority, setSelectedPriority] = useState<
+    Record<string, string>
+  >({});
+  const [lists, setLists] = useState<ListSchema[]>([]);
+  const [idList, setIdList] = useState<string>("");
 
   const { register, handleSubmit, reset } = useForm();
 
   // GET METHOD
+  const getAllList = async () => {
+    const idUser = localStorage.getItem("id_user");
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/lists/totalTask/${idUser}`,
+        {
+          method: "GET",
+        }
+      );
+
+      const data = await response.json();
+
+      const dataJSON = data.data;
+
+      setLists(dataJSON);
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+
   const getActiveUser = async () => {
     const idUser = localStorage.getItem("id_user");
 
-    const response = await fetch(`http://localhost:3001/api/users/${idUser}`);
+    try {
+      const response = await fetch(`http://localhost:3001/api/users/${idUser}`);
 
-    const data = await response.json();
+      const data = await response.json();
 
-    const { first_name, last_name } = data.data[0];
+      const { first_name, last_name } = data.data[0];
 
-    const nameUser = `${first_name} ${last_name}`;
+      const nameUser = `${first_name} ${last_name}`;
 
-    setName(nameUser);
-    console.log(first_name + " " + last_name);
+      setName(nameUser);
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
 
   const getTotalTaskUser = async () => {
     const idUser = localStorage.getItem("id_user");
 
-    const response = await fetch(
-      `http://localhost:3001/api/lists/totalTask/${idUser}`,
-      {
-        method: "GET",
-      }
-    );
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/lists/totalTask/${idUser}`,
+        {
+          method: "GET",
+        }
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    const dataJSON = data.data;
+      const dataJSON = data.data;
 
-    const count = Object.keys(dataJSON).length;
+      const count = Object.keys(dataJSON).length;
 
-    setTotalTask(count.toString());
-
-    console.log(dataJSON);
+      setTotalTask(count.toString());
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
 
   const getInProgressTaskUser = async () => {
     const idUser = localStorage.getItem("id_user");
 
-    const response = await fetch(
-      `http://localhost:3001/api/lists/inProgresstask/${idUser}?is_in_progress=true`,
-      {
-        method: "GET",
-      }
-    );
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/lists/inProgresstask/${idUser}?is_in_progress=true`,
+        {
+          method: "GET",
+        }
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    const dataJSON = data.data;
+      const dataJSON = data.data;
 
-    const count = Object.keys(dataJSON).length;
-    console.log(dataJSON);
-    setTotalInProgress(count.toString());
+      const count = Object.keys(dataJSON).length;
+
+      setTotalInProgress(count.toString());
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
 
   const getCompleteTaskUser = async () => {
     const idUser = localStorage.getItem("id_user");
 
-    const response = await fetch(
-      `http://localhost:3001/api/lists/inProgresstask/${idUser}?is_in_progress=false`,
-      {
-        method: "GET",
-      }
-    );
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/lists/inProgresstask/${idUser}?is_in_progress=false`,
+        {
+          method: "GET",
+        }
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    const dataJSON = data.data;
+      const dataJSON = data.data;
 
-    const count = Object.keys(dataJSON).length;
-    console.log(dataJSON);
-    setTotalCompleted(count.toString());
+      const count = Object.keys(dataJSON).length;
+
+      setTotalCompleted(count.toString());
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
 
   // POST METHOD
   const createNewList = async (id_user: string, values: AddTaskSchema) => {
     const { name_list } = values;
 
-    await fetch("http://localhost:3001/api/lists", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id_user, name_list }),
-    });
+    try {
+      await fetch("http://localhost:3001/api/lists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_user, name_list }),
+      });
 
-    setTrigger((state) => !state);
+      setTrigger((state) => !state);
 
-    alert("Task has been added!");
+      alert("Task has been added!");
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
+
+  // PATCH METHOD
+  const updateListUser = useCallback(
+    async (idList: string, newPriority: string) => {
+      try {
+        await fetch(
+          `http://localhost:3001/api/lists/update-priority/${idList}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ priority: newPriority }),
+          }
+        );
+      } catch (error) {
+        alert(`Error: ${error}`);
+      }
+    },
+    []
+  );
 
   const onSubmit = handleSubmit((values) => {
     const idUser = localStorage.getItem("id_user");
@@ -125,12 +196,76 @@ const HomePage = () => {
     reset();
   });
 
+  const getPriorityColor = (idList: string, prevPriority: string) => {
+    switch (selectedPriority[idList] || prevPriority) {
+      case "High":
+        return "border-red-800 bg-red-300 text-red-800";
+      case "Medium":
+        return "border-orange-800 bg-orange-300 text-orange-800";
+      case "Low":
+        return "border-blue-800 bg-blue-300 text-blue-800";
+    }
+  };
+
+  const getParentColor = (idList: string, prevPriority: string) => {
+    switch (selectedPriority[idList] || prevPriority) {
+      case "High":
+        return "bg-red-100";
+      case "Medium":
+        return "bg-orange-100";
+      case "Low":
+        return "bg-blue-100";
+    }
+  };
+
+  const handleGetAllList = useCallback(async () => {
+    await getAllList();
+  }, []);
+
+  const handleGetActiveUser = useCallback(async () => {
+    await getActiveUser();
+  }, []);
+
+  const handleGetTotalUser = useCallback(async () => {
+    await getTotalTaskUser();
+  }, []);
+
+  const handleGetInProgressTaskUser = useCallback(async () => {
+    await getInProgressTaskUser();
+  }, []);
+
+  const handleGetCompleteTaskUser = useCallback(async () => {
+    await getCompleteTaskUser();
+  }, []);
+
+  const handlePriority = useCallback((idList: string, newPriority: string) => {
+    setSelectedPriority((prev) => ({
+      ...prev,
+      [idList]: newPriority,
+    }));
+
+    setIdList(idList);
+  }, []);
+
   useEffect(() => {
-    getActiveUser();
-    getTotalTaskUser();
-    getInProgressTaskUser();
-    getCompleteTaskUser();
-  }, [trigger]);
+    updateListUser(idList, selectedPriority[idList]);
+    handleGetAllList();
+    handleGetActiveUser();
+    handleGetInProgressTaskUser();
+    handleGetCompleteTaskUser();
+    handleGetTotalUser();
+    console.log("Update State: ", selectedPriority);
+  }, [
+    trigger,
+    selectedPriority,
+    idList,
+    updateListUser,
+    handleGetActiveUser,
+    handleGetTotalUser,
+    handleGetInProgressTaskUser,
+    handleGetCompleteTaskUser,
+    handleGetAllList,
+  ]);
 
   return (
     <>
@@ -228,22 +363,62 @@ const HomePage = () => {
                 </button>
               </div>
 
-              <div className="flex justify-between items-center bg-red-100 my-2 mx-6 px-8 py-4 rounded-lg">
-                <div className="flex justify-center items-center gap-4">
-                  <input
-                    type="checkbox"
-                    id="first"
-                    className="w-7 h-7 text-blue-500 focus:ring-blue-500 cursor-pointer"
-                  />
-                  <div className="flex flex-col">
-                    <label htmlFor="first">Coding</label>
-                    <label htmlFor="first">06.00 - 06.00</label>
+              {/* LISTS TO-DO */}
+              {lists.map((list) => {
+                return (
+                  <div
+                    className={`style-parent-option ${getParentColor(
+                      list.id_list,
+                      list.priority
+                    )}`}
+                    key={list.id_list}
+                  >
+                    <div className="flex justify-center items-center gap-4">
+                      <input
+                        type="checkbox"
+                        id="first"
+                        checked={isCheck}
+                        onChange={(e) => setIsCheck(e.target.checked)}
+                        className="w-7 h-7 text-blue-500 focus:ring-blue-500 cursor-pointer"
+                      />
+                      <div className="flex flex-col">
+                        <label
+                          htmlFor="first"
+                          className={isCheck ? "line-through decoration-2" : ""}
+                        >
+                          {list.name_list}
+                        </label>
+                      </div>
+                    </div>
+
+                    <div>
+                      <select
+                        className={`style-option ${getPriorityColor(
+                          list.id_list,
+                          list.priority
+                        )}`}
+                        onChange={(e) =>
+                          handlePriority(list.id_list, e.target.value)
+                        }
+                        value={selectedPriority[list.id_list] || list.priority}
+                      >
+                        <option value="Low" className="text-primary bg-white">
+                          Low Priority
+                        </option>
+                        <option
+                          value="Medium"
+                          className="text-primary bg-white"
+                        >
+                          Medium Priority
+                        </option>
+                        <option value="High" className="text-primary bg-white">
+                          High Priority
+                        </option>
+                      </select>
+                    </div>
                   </div>
-                </div>
-                <div className="border-2 border-red-800 bg-red-300 text-red-800 py-1 px-8 rounded-full">
-                  <h1>High Priority</h1>
-                </div>
-              </div>
+                );
+              })}
 
               <div className="flex justify-between items-center bg-red-100 my-2 mx-6 px-8 py-4 rounded-lg">
                 <div className="flex justify-center items-center gap-4">

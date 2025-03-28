@@ -23,3 +23,11 @@
 .custom-box {
   @apply flex gap-2 py-4 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer;
 }
+
+.style-option {
+  @apply text-center border-2 py-1 px-4 rounded-full focus:outline-none;
+}
+
+.style-parent-option {
+  @apply flex justify-between items-center my-2 mx-6 px-8 py-4 rounded-lg;
+}

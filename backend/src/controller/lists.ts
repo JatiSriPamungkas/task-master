@@ -5,6 +5,7 @@ import {
   deleteLists,
   getTotalTask,
   getInProgressTask,
+  updatePriorities,
 } from "../models/lists";
 
 export const getLists = async (req: Request, res: Response) => {
@@ -88,6 +89,28 @@ export const deleteList = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       message: "DELETE lists failed!",
+      serveMessage: error,
+    });
+  }
+};
+
+export const updatePriorityUser = async (req: Request, res: Response) => {
+  const { idList } = req.params;
+  const { priority } = req.body;
+
+  try {
+    await updatePriorities(idList, priority);
+
+    res.status(200).json({
+      message: "PATCH priority user success!",
+      data: {
+        id_list: idList,
+        priority: priority,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "PATCH priority user failed!",
       serveMessage: error,
     });
   }

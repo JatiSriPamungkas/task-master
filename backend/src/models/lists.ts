@@ -43,3 +43,10 @@ export const deleteLists = (idList: string) => {
 
   return dbPool.execute(SQLQuery);
 };
+
+// PATCH METHOD
+export const updatePriorities = (idList: string, priority: string) => {
+  const SQLQuery = `UPDATE lists SET priority = '${priority}' WHERE id_list = ${idList}`;
+
+  return dbPool.execute(SQLQuery);
+};

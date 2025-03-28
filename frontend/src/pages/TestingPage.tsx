@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type ListSchema = {
   id_list: string;
@@ -90,15 +90,20 @@ const TestingPage = () => {
   };
 
   // HANDLE THINGS
-  const handleDeleteUser = async (idUser: string) => {
+  const handleDeleteUser = useCallback(async (idUser: string) => {
     await deleteUser(idUser);
     await handleFetchUser();
-  };
+  }, []);
 
-  const handleDeleteList = async (idList: string) => {
+  const handleDeleteList = useCallback(async (idList: string) => {
     await deleteList(idList);
     await handleFetchLists();
-  };
+  }, []);
+
+  useEffect(() => {
+    handleFetchUser();
+    handleFetchLists();
+  }, [handleDeleteList, handleDeleteUser]);
 
   return (
     <>
@@ -141,13 +146,13 @@ const TestingPage = () => {
               })}
             </tbody>
           </table>
-
+          {/* 
           <button
             onClick={handleFetchUser}
             className="border-2 border-solid border-black hover:bg-gray-300 my-4 py-2 px-6 rounded-lg"
           >
             Fetch users
-          </button>
+          </button> */}
         </div>
 
         <div>
@@ -183,12 +188,12 @@ const TestingPage = () => {
 
           {isEmpty && <p className="text-red-500 mx-40 mt-5">List is Empty</p>}
 
-          <button
+          {/* <button
             onClick={handleFetchLists}
             className="border-2 border-solid border-black hover:bg-gray-300 my-4 py-2 px-6 rounded-lg"
           >
             Fetch lists
-          </button>
+          </button> */}
         </div>
       </div>
     </>
