@@ -123,6 +123,8 @@ const HomePage = () => {
 
       const count = Object.keys(dataJSON).length;
 
+      console.log(count);
+
       setTotalInProgress(count.toString());
     } catch (error) {
       alert(`Error: ${error}`);
@@ -145,6 +147,8 @@ const HomePage = () => {
       const dataJSON = data.data;
 
       const count = Object.keys(dataJSON).length;
+
+      console.log(count);
 
       setTotalCompleted(count);
     } catch (error) {
@@ -259,12 +263,12 @@ const HomePage = () => {
     await getTotalTaskUser();
   }, []);
 
-  const handleGetInProgressTaskUser = useCallback(async () => {
-    await getInProgressTaskUser();
+  const handleGetInProgressTaskUser = useCallback(() => {
+    getInProgressTaskUser();
   }, []);
 
-  const handleGetCompleteTaskUser = useCallback(async () => {
-    await getCompleteTaskUser();
+  const handleGetCompleteTaskUser = useCallback(() => {
+    getCompleteTaskUser();
   }, []);
 
   // const handleListPriority = useCallback(async () => {}, [
@@ -317,18 +321,21 @@ const HomePage = () => {
   }, [idListPriority, selectedPriority, updatePriorityUser]);
 
   useEffect(() => {
-    updateIsInProgressUser(idListCheck, isCheck[idListCheck]);
+    const updateStateInProgress = async () => {
+      await updateIsInProgressUser(idListCheck, isCheck[idListCheck]);
 
-    handleGetInProgressTaskUser();
-    handleGetCompleteTaskUser();
-    handleGetTotalUser();
+      handleGetInProgressTaskUser();
+      handleGetCompleteTaskUser();
+    };
+
+    updateStateInProgress();
   }, [
     isCheck,
     idListCheck,
     updateIsInProgressUser,
     handleGetInProgressTaskUser,
     handleGetCompleteTaskUser,
-    handleGetTotalUser,
+    updateIsInProgressUserIsLoading,
   ]);
 
   return (
