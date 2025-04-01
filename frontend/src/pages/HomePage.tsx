@@ -25,6 +25,7 @@ type ListSchema = {
   priority: string;
 };
 
+// Home page section
 const HomePage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
