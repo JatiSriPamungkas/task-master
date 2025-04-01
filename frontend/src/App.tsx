@@ -8,6 +8,7 @@ import HomePage from "./pages/HomePage";
 function App() {
   return (
     <>
+      {/* ROUTES PATH */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
