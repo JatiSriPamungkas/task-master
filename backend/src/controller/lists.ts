@@ -6,6 +6,7 @@ import {
   getTotalTask,
   getInProgressTask,
   updatePriorities,
+  updateIsInProgressTask,
 } from "../models/lists";
 
 export const getLists = async (req: Request, res: Response) => {
@@ -111,6 +112,31 @@ export const updatePriorityUser = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       message: "PATCH priority user failed!",
+      serveMessage: error,
+    });
+  }
+};
+
+export const updateIsInProgressTaskUser = async (
+  req: Request,
+  res: Response
+) => {
+  const { idList } = req.params;
+  const { isInProgress } = req.body;
+
+  try {
+    await updateIsInProgressTask(idList, isInProgress);
+
+    res.status(200).json({
+      message: "PATCH is in progress user success",
+      data: {
+        idList,
+        isInProgress,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "PATCH is in progress user failed!",
       serveMessage: error,
     });
   }

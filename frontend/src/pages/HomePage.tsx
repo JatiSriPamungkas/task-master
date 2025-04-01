@@ -30,14 +30,15 @@ const HomePage = () => {
   const [name, setName] = useState<string>("");
   const [totalTask, setTotalTask] = useState<string>("");
   const [totalInProgress, setTotalInProgress] = useState<string>("");
-  const [totalCompleted, setTotalCompleted] = useState<string>("");
+  const [totalCompleted, setTotalCompleted] = useState<number>(0);
   const [trigger, setTrigger] = useState<boolean>(false);
-  const [isCheck, setIsCheck] = useState<boolean>(false);
+  const [isCheck, setIsCheck] = useState<Record<string, boolean>>({});
   const [selectedPriority, setSelectedPriority] = useState<
     Record<string, string>
   >({});
   const [lists, setLists] = useState<ListSchema[]>([]);
-  const [idList, setIdList] = useState<string>("");
+  const [idListPriority, setIdListPriority] = useState<string>("");
+  const [idListCheck, setIdListCheck] = useState<string>("");
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -109,7 +110,7 @@ const HomePage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/lists/inProgresstask/${idUser}?is_in_progress=true`,
+        `http://localhost:3001/api/lists/in-progress/${idUser}?is_in_progress=true`,
         {
           method: "GET",
         }
@@ -132,7 +133,7 @@ const HomePage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/lists/inProgresstask/${idUser}?is_in_progress=false`,
+        `http://localhost:3001/api/lists/in-progress/${idUser}?is_in_progress=false`,
         {
           method: "GET",
         }
@@ -144,7 +145,7 @@ const HomePage = () => {
 
       const count = Object.keys(dataJSON).length;
 
-      setTotalCompleted(count.toString());
+      setTotalCompleted(count);
     } catch (error) {
       alert(`Error: ${error}`);
     }
@@ -170,7 +171,7 @@ const HomePage = () => {
   };
 
   // PATCH METHOD
-  const updateListUser = useCallback(
+  const updatePriorityUser = useCallback(
     async (idList: string, newPriority: string) => {
       try {
         await fetch(
@@ -183,6 +184,33 @@ const HomePage = () => {
         );
       } catch (error) {
         alert(`Error: ${error}`);
+      }
+    },
+    []
+  );
+
+  // ISLOADING HANDLER
+  const [updateIsInProgressUserIsLoading, setUpdateIsInProgressUserIsLoading] =
+    useState<boolean>(false);
+  // -------------------
+  const updateIsInProgressUser = useCallback(
+    async (idList: string, newIsInProgress: boolean) => {
+      setUpdateIsInProgressUserIsLoading(true);
+      const reverseNewIsInProgress = !newIsInProgress;
+
+      try {
+        await fetch(
+          `http://localhost:3001/api/lists/update-is-in-progress/${idList}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ isInProgress: reverseNewIsInProgress }),
+          }
+        );
+      } catch (error) {
+        alert(`Error: ${error}`);
+      } finally {
+        setUpdateIsInProgressUserIsLoading(false);
       }
     },
     []
@@ -238,33 +266,68 @@ const HomePage = () => {
     await getCompleteTaskUser();
   }, []);
 
-  const handlePriority = useCallback((idList: string, newPriority: string) => {
+  // const handleListPriority = useCallback(async () => {}, [
+  //   idListPriority,
+  //   selectedPriority,
+  //   updatePriorityUser,
+  // ]);
+
+  // const handleUpdateIsInProgress = useCallback(async () => {
+  //   await updateIsInProgressUser(idListCheck, isCheck[idListCheck]);
+  // }, [idListCheck, isCheck, updateIsInProgressUser]);
+
+  const handlePriority = (idList: string, newPriority: string) => {
     setSelectedPriority((prev) => ({
       ...prev,
       [idList]: newPriority,
     }));
 
-    setIdList(idList);
-  }, []);
+    setIdListPriority(idList);
+  };
 
+  const handlCheckBox = (idList: string, newIsInProgress: boolean) => {
+    setIsCheck((prev) => ({
+      ...prev,
+      [idList]: newIsInProgress,
+    }));
+
+    setIdListCheck(idList);
+  };
+
+  // GET EFFECT METHOD
   useEffect(() => {
-    updateListUser(idList, selectedPriority[idList]);
     handleGetAllList();
     handleGetActiveUser();
     handleGetInProgressTaskUser();
     handleGetCompleteTaskUser();
     handleGetTotalUser();
-    console.log("Update State: ", selectedPriority);
   }, [
     trigger,
-    selectedPriority,
-    idList,
-    updateListUser,
     handleGetActiveUser,
     handleGetTotalUser,
     handleGetInProgressTaskUser,
     handleGetCompleteTaskUser,
     handleGetAllList,
+  ]);
+
+  // PATCH EFFECT METHOD
+  useEffect(() => {
+    updatePriorityUser(idListPriority, selectedPriority[idListPriority]);
+  }, [idListPriority, selectedPriority, updatePriorityUser]);
+
+  useEffect(() => {
+    updateIsInProgressUser(idListCheck, isCheck[idListCheck]);
+
+    handleGetInProgressTaskUser();
+    handleGetCompleteTaskUser();
+    handleGetTotalUser();
+  }, [
+    isCheck,
+    idListCheck,
+    updateIsInProgressUser,
+    handleGetInProgressTaskUser,
+    handleGetCompleteTaskUser,
+    handleGetTotalUser,
   ]);
 
   return (
@@ -376,15 +439,22 @@ const HomePage = () => {
                     <div className="flex justify-center items-center gap-4">
                       <input
                         type="checkbox"
-                        id="first"
-                        checked={isCheck}
-                        onChange={(e) => setIsCheck(e.target.checked)}
+                        id={list.id_list}
+                        disabled={updateIsInProgressUserIsLoading}
+                        checked={isCheck[list.id_list] ?? !list.is_in_progress}
+                        onChange={(e) =>
+                          handlCheckBox(list.id_list, e.target.checked)
+                        }
                         className="w-7 h-7 text-blue-500 focus:ring-blue-500 cursor-pointer"
                       />
                       <div className="flex flex-col">
                         <label
-                          htmlFor="first"
-                          className={isCheck ? "line-through decoration-2" : ""}
+                          htmlFor={list.id_list}
+                          className={
+                            isCheck[list.id_list] ?? !list.is_in_progress
+                              ? "line-through decoration-2"
+                              : ""
+                          }
                         >
                           {list.name_list}
                         </label>
@@ -419,23 +489,6 @@ const HomePage = () => {
                   </div>
                 );
               })}
-
-              <div className="flex justify-between items-center bg-red-100 my-2 mx-6 px-8 py-4 rounded-lg">
-                <div className="flex justify-center items-center gap-4">
-                  <input
-                    type="checkbox"
-                    id="first"
-                    className="w-7 h-7 text-blue-500 focus:ring-blue-500 cursor-pointer"
-                  />
-                  <div className="flex flex-col">
-                    <label htmlFor="first">Coding</label>
-                    <label htmlFor="first">06.00 - 06.00</label>
-                  </div>
-                </div>
-                <div className="border-2 border-red-800 bg-red-300 text-red-800 py-1 px-8 rounded-full">
-                  <h1>High Priority</h1>
-                </div>
-              </div>
             </div>
           </div>
         </div>

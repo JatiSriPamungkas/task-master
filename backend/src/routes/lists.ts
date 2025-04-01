@@ -5,6 +5,7 @@ import {
   getInProgressTaskUser,
   getLists,
   getTotalTaskUser,
+  updateIsInProgressTaskUser,
   updatePriorityUser,
 } from "../controller/lists";
 
@@ -14,10 +15,12 @@ router.get("/", getLists);
 
 router.get("/totalTask/:idUser", getTotalTaskUser);
 
-router.get("/inProgresstask/:idUser", getInProgressTaskUser);
+router.get("/in-progress/:idUser", getInProgressTaskUser);
 
 router.post("/", createList);
 
 router.delete("/:idList", deleteList);
 
 router.patch("/update-priority/:idList", updatePriorityUser);
+
+router.patch("/update-is-in-progress/:idList", updateIsInProgressTaskUser)

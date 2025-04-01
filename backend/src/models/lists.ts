@@ -50,3 +50,12 @@ export const updatePriorities = (idList: string, priority: string) => {
 
   return dbPool.execute(SQLQuery);
 };
+
+export const updateIsInProgressTask = (
+  idList: string,
+  isInProgress: boolean
+) => {
+  const SQLQuery = `UPDATE lists SET is_in_progress = ${isInProgress} WHERE id_list = ${idList}`;
+
+  return dbPool.execute(SQLQuery);
+};

@@ -25,7 +25,7 @@
 }
 
 .style-option {
-  @apply text-center border-2 py-1 px-4 rounded-full focus:outline-none;
+  @apply text-center border-2 py-1 px-6 rounded-full focus:outline-none;
 }
 
 .style-parent-option {
