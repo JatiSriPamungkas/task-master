@@ -1,14 +1,15 @@
 import taskMaster from "../assets/Logo Task Master.png";
 import profile from "../assets/Ishida_Mitsunari_Square.png";
 import {
-  House,
-  CalendarDays,
   ListTodo,
-  ChartNoAxesColumn,
-  Settings,
+  // House,
+  // CalendarDays,
+  // ChartNoAxesColumn,
+  // Settings,
   Loader,
   Check,
   Plus,
+  Menu,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useGetAllTaskList } from "../api/useGetAllTaskList";
@@ -47,12 +48,14 @@ const HomePage = () => {
 
   // MANDATORY STATE
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [isCheck, setIsCheck] = useState<Record<string, boolean>>({});
   const [selectedPriority, setSelectedPriority] = useState<
     Record<string, string>
   >({});
   const [idListPriority, setIdListPriority] = useState<string>("");
   const [idListCheck, setIdListCheck] = useState<string>("");
+  const [menuActive, setMenuActive] = useState<string>("");
 
   const onSubmit = handleSubmit((values) => {
     const idUser = localStorage.getItem("id_user");
@@ -148,18 +151,18 @@ const HomePage = () => {
 
   return (
     <>
-      {/* HEADER SECTION */}
-      <div className=" bg-stone-100 font-lexend text-primary min-h-screen">
+      <div className=" bg-stone-100 font-lexend text-primary w-screen min-h-screen">
+        {/* HEADER SECTION */}
         <div className="flex justify-between py-4 px-8 items-center bg-white border-b-2 border-slate-200">
-          <div className="flex justify-around items-center gap-4">
+          <div className="flex justify-between items-center gap-4">
             <a href="">
               <img src={taskMaster} alt="Task Master Logo" width={50} />
             </a>
-            <a href="" className="text-3xl text-primary">
+            <a href="" className="text-4xl font-medium text-primary">
               Task Master
             </a>
           </div>
-          <div className="profile-container">
+          <div>
             <img
               src={profile}
               alt="Profile Photo"
@@ -171,45 +174,129 @@ const HomePage = () => {
 
         <div className="flex min-h-screen">
           {/* ASIDE SECTION */}
-          <div className="w-90 bg-white px-8 py-2 border-r-2 border-slate-200 grow-1">
-            <ul className="flex flex-col gap-2 text-xl text-slate-600">
-              <li className="custom-box">
-                <House width={50} />
-                <button className="cursor-pointer focus:outline-none">
+          {/* <div
+            className={`bg-white px-2 py-2 border-r-2 border-slate-200 hidden`}
+          >
+            <div className="px-2.5 py-2">
+              <button>
+                <Menu width={25} />
+              </button>
+            </div>
+
+            <ul className="flex flex-col gap-2 text-sm text-slate-600">
+              <li>
+                <button className="custom-menu">
+                  <House width={15} />
                   Dashboard
                 </button>
               </li>
-              <li className="custom-box">
-                <CalendarDays width={50} />
-                <button className="cursor-pointer focus:outline-none">
+              <li>
+                <button className="custom-menu">
+                  <CalendarDays width={15} />
                   Calendar
                 </button>
               </li>
-              <li className="custom-box">
-                <ListTodo width={50} />
-                <button className="cursor-pointer focus:outline-none">
+              <li>
+                <button className="custom-menu">
+                  <ListTodo width={15} />
                   Task
                 </button>
               </li>
-              <li className="custom-box">
-                <ChartNoAxesColumn width={50} />
-                <button className="cursor-pointer focus:outline-none">
+              <li>
+                <button className="custom-menu">
+                  <ChartNoAxesColumn width={20} />
                   Analytics
                 </button>
               </li>
-              <li className="custom-box">
-                <Settings width={50} />
-                <button className="cursor-pointer focus:outline-none">
+              <li>
+                <button className="custom-menu">
+                  <Settings width={20} />
                   Settings
                 </button>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* DASHBOARD SECTION  */}
-          <div className="m-12 grow-50">
+          <div className="my-12 mx-10 w-full relative">
+            <div
+              className={`w-full h-16 items-start absolute overflow-hidden bg-white shadow-sm border-2 border-slate-300 rounded-2xl px-4 py-4 text-2xl z-2 transition-all ease-in-out duration-500 ${
+                isSidebarOpen ? "items-start h-100" : ""
+              }`}
+            >
+              <div className="flex justify-between">
+                <button
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  className="focus:outline-none cursor-pointer"
+                >
+                  <Menu width={25} />
+                </button>
+                <h1>{menuActive || "Dashboard"}</h1>
+              </div>
+
+              <div className="my-6">
+                <ul className="flex flex-col gap-4">
+                  <li>
+                    <button
+                      onClick={() => setMenuActive("Dashboard")}
+                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                        menuActive == "Dashboard" &&
+                        " bg-slate-800 text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      <h1>Dashboard</h1>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setMenuActive("Calendar")}
+                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                        menuActive == "Calendar" &&
+                        " bg-slate-800 text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      <h1>Calendar</h1>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setMenuActive("Task")}
+                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                        menuActive == "Task" &&
+                        " bg-slate-800 text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      <h1>Task</h1>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setMenuActive("Analytics")}
+                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                        menuActive == "Analytics" &&
+                        " bg-slate-800 text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      <h1>Analytics</h1>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setMenuActive("Settings")}
+                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                        menuActive == "Settings" &&
+                        " bg-slate-800 text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      <h1>Settings</h1>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
             <div className="flex flex-col gap-4">
-              <h1 className="text-4xl text-primary">
+              <h1 className="text-4xl text-primary mt-24">
                 Welcome back, Master {name}
               </h1>
               <p className="text-xl text-secondary">
@@ -218,21 +305,21 @@ const HomePage = () => {
             </div>
             <div className="flex w-full justify-around gap-6 pt-10 h-65">
               <div className="flex flex-col border-2 border-slate-300 border-solid grow-1 justify-center min-h-32 gap-5 bg-white p-6 rounded-2xl">
-                <div className="flex justify-between">
+                <div className="flex sm:flex-col-reverse sm:gap-4 lg:flex-row lg:justify-between">
                   <h3>Total Task</h3>
                   <ListTodo width={25} />
                 </div>
                 <h1 className="text-6xl">{totalTask}</h1>
               </div>
               <div className="flex flex-col border-2 border-slate-300 border-solid grow-1 justify-center min-h-32 gap-5 bg-white  p-6 rounded-2xl">
-                <div className="flex justify-between">
+                <div className="flex sm:flex-col-reverse sm:gap-4 lg:flex-row lg:justify-between">
                   <h3>In Progress</h3>
                   <Loader width={25} />
                 </div>
                 <h1 className="text-6xl">{totalInProgress}</h1>
               </div>
               <div className="flex flex-col border-2 border-slate-300 border-solid grow-1 justify-center min-h-32 gap-5 bg-white p-6 rounded-2xl">
-                <div className="flex justify-between">
+                <div className="flex sm:flex-col-reverse sm:gap-4 lg:flex-row lg:justify-between">
                   <h3>Completed</h3>
                   <Check width={25} />
                 </div>
@@ -335,6 +422,11 @@ const HomePage = () => {
           getTotalTaskUserIsLoading ||
           getInProgressTaskUserIsLoading ||
           getCompletedTaskUserIsLoading) && <IsLoading />}
+
+        {/* BACKGROUND MODAL */}
+        {isSidebarOpen && (
+          <div className="fixed inset-0 bg-gray-900/70 z-1"></div>
+        )}
       </div>
     </>
   );

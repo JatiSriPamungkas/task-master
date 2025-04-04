@@ -4,18 +4,18 @@ import {
   UseFormStateReturn,
 } from "react-hook-form";
 
-type PropsDataSchema = {
+type TaskModalDataSchema = {
   name_list: string;
 };
 
-type PropsSchema = {
-  onSubmit: ReturnType<UseFormHandleSubmit<PropsDataSchema>>;
-  register: UseFormRegister<PropsDataSchema>;
-  formState: UseFormStateReturn<PropsDataSchema>;
+type TaskModalSchema = {
+  onSubmit: ReturnType<UseFormHandleSubmit<TaskModalDataSchema>>;
+  register: UseFormRegister<TaskModalDataSchema>;
+  formState: UseFormStateReturn<TaskModalDataSchema>;
   handleCloseModals: () => void;
 };
 
-const TaskModal: React.FC<PropsSchema> = ({
+const TaskModal: React.FC<TaskModalSchema> = ({
   onSubmit,
   register,
   formState,

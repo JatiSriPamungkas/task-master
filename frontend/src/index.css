@@ -20,8 +20,8 @@
   }
 }
 
-.custom-box {
-  @apply flex gap-2 py-4 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer;
+.custom-menu {
+  @apply flex w-full items-center gap-2 px-4 py-3 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer focus:outline-none;
 }
 
 .style-option {
