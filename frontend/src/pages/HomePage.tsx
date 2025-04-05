@@ -2,10 +2,10 @@ import taskMaster from "../assets/Logo Task Master.png";
 import profile from "../assets/Ishida_Mitsunari_Square.png";
 import {
   ListTodo,
-  // House,
-  // CalendarDays,
-  // ChartNoAxesColumn,
-  // Settings,
+  House,
+  CalendarDays,
+  ChartNoAxesColumn,
+  Settings,
   Loader,
   Check,
   Plus,
@@ -55,7 +55,7 @@ const HomePage = () => {
   >({});
   const [idListPriority, setIdListPriority] = useState<string>("");
   const [idListCheck, setIdListCheck] = useState<string>("");
-  const [menuActive, setMenuActive] = useState<string>("");
+  const [menuActive, setMenuActive] = useState<string>("Dashboard");
 
   const onSubmit = handleSubmit((values) => {
     const idUser = localStorage.getItem("id_user");
@@ -174,64 +174,93 @@ const HomePage = () => {
 
         <div className="flex min-h-screen">
           {/* ASIDE SECTION */}
-          {/* <div
-            className={`bg-white px-2 py-2 border-r-2 border-slate-200 hidden`}
+          <div
+            className={`w-0 bg-white md:w-75 md:px-2 py-2 border-r-2 border-slate-200 overflow-hidden transition-all ease duration-500`}
           >
-            <div className="px-2.5 py-2">
-              <button>
-                <Menu width={25} />
-              </button>
-            </div>
-
             <ul className="flex flex-col gap-2 text-sm text-slate-600">
               <li>
-                <button className="custom-menu">
+                <button
+                  onClick={() => setMenuActive("Dashboard")}
+                  className={`flex w-full items-center gap-2 px-4 py-3 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer focus:outline-none ${
+                    menuActive == "Dashboard"
+                      ? "bg-slate-800 text-white hover:text-white hover:bg-slate-800"
+                      : ""
+                  }`}
+                >
                   <House width={15} />
                   Dashboard
                 </button>
               </li>
               <li>
-                <button className="custom-menu">
+                <button
+                  onClick={() => setMenuActive("Calendar")}
+                  className={`flex w-full items-center gap-2 px-4 py-3 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer focus:outline-none ${
+                    menuActive == "Calendar"
+                      ? "bg-slate-800 text-white hover:text-white hover:bg-slate-800"
+                      : ""
+                  }`}
+                >
                   <CalendarDays width={15} />
                   Calendar
                 </button>
               </li>
               <li>
-                <button className="custom-menu">
+                <button
+                  onClick={() => setMenuActive("Task")}
+                  className={`flex w-full items-center gap-2 px-4 py-3 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer focus:outline-none ${
+                    menuActive == "Task"
+                      ? "bg-slate-800 text-white hover:text-white hover:bg-slate-800"
+                      : ""
+                  }`}
+                >
                   <ListTodo width={15} />
                   Task
                 </button>
               </li>
               <li>
-                <button className="custom-menu">
+                <button
+                  onClick={() => setMenuActive("Analytics")}
+                  className={`flex w-full items-center gap-2 px-4 py-3 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer focus:outline-none ${
+                    menuActive == "Analytics"
+                      ? "bg-slate-800 text-white hover:text-white hover:bg-slate-800"
+                      : ""
+                  }`}
+                >
                   <ChartNoAxesColumn width={20} />
                   Analytics
                 </button>
               </li>
               <li>
-                <button className="custom-menu">
+                <button
+                  onClick={() => setMenuActive("Settings")}
+                  className={`flex w-full items-center gap-2 px-4 py-3 rounded-2xl hover:bg-slate-100 hover:text-primary cursor-pointer focus:outline-none ${
+                    menuActive == "Settings"
+                      ? "bg-slate-800 text-white hover:text-white hover:bg-slate-800"
+                      : ""
+                  }`}
+                >
                   <Settings width={20} />
                   Settings
                 </button>
               </li>
             </ul>
-          </div> */}
+          </div>
 
           {/* DASHBOARD SECTION  */}
-          <div className="my-12 mx-10 w-full relative">
+          <div className="my-10 mx-10 w-full relative">
             <div
-              className={`w-full h-16 items-start absolute overflow-hidden bg-white shadow-sm border-2 border-slate-300 rounded-2xl px-4 py-4 text-2xl z-2 transition-all ease-in-out duration-500 ${
-                isSidebarOpen ? "items-start h-100" : ""
+              className={`w-full h-16 items-start absolute overflow-hidden bg-white shadow-sm border-2 border-slate-300 rounded-2xl px-4 py-4 text-2xl z-2 transition-all ease-out duration-500 md:-translate-y-300 ${
+                isSidebarOpen ? "items-start h-123" : ""
               }`}
             >
-              <div className="flex justify-between">
+              <div className="flex justify-between px-4">
                 <button
                   onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                   className="focus:outline-none cursor-pointer"
                 >
                   <Menu width={25} />
                 </button>
-                <h1>{menuActive || "Dashboard"}</h1>
+                <h1>{menuActive}</h1>
               </div>
 
               <div className="my-6">
@@ -239,7 +268,7 @@ const HomePage = () => {
                   <li>
                     <button
                       onClick={() => setMenuActive("Dashboard")}
-                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                      className={`w-full text-start py-4 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
                         menuActive == "Dashboard" &&
                         " bg-slate-800 text-white hover:bg-slate-800"
                       }`}
@@ -250,7 +279,7 @@ const HomePage = () => {
                   <li>
                     <button
                       onClick={() => setMenuActive("Calendar")}
-                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                      className={`w-full text-start py-4 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
                         menuActive == "Calendar" &&
                         " bg-slate-800 text-white hover:bg-slate-800"
                       }`}
@@ -261,7 +290,7 @@ const HomePage = () => {
                   <li>
                     <button
                       onClick={() => setMenuActive("Task")}
-                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                      className={`w-full text-start py-4 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
                         menuActive == "Task" &&
                         " bg-slate-800 text-white hover:bg-slate-800"
                       }`}
@@ -272,7 +301,7 @@ const HomePage = () => {
                   <li>
                     <button
                       onClick={() => setMenuActive("Analytics")}
-                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                      className={`w-full text-start py-4 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
                         menuActive == "Analytics" &&
                         " bg-slate-800 text-white hover:bg-slate-800"
                       }`}
@@ -283,7 +312,7 @@ const HomePage = () => {
                   <li>
                     <button
                       onClick={() => setMenuActive("Settings")}
-                      className={`w-full text-start py-2 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
+                      className={`w-full text-start py-4 px-4 rounded-2xl hover:bg-slate-300 active:bg-slate-800 active:text-white ${
                         menuActive == "Settings" &&
                         " bg-slate-800 text-white hover:bg-slate-800"
                       }`}
@@ -295,9 +324,12 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-4">
-              <h1 className="text-4xl text-primary mt-24">
-                Welcome back, Master {name}
+            <div className="flex flex-col gap-4 mt-24 md:mt-0">
+              <h1 className="text-4xl text-primary">
+                Welcome back,{" "}
+                <span className="whitespace-nowrap xl:whitespace-normal">
+                  Master {name}
+                </span>
               </h1>
               <p className="text-xl text-secondary">
                 Here's your overview task for today!
@@ -425,7 +457,7 @@ const HomePage = () => {
 
         {/* BACKGROUND MODAL */}
         {isSidebarOpen && (
-          <div className="fixed inset-0 bg-gray-900/70 z-1"></div>
+          <div className="fixed inset-0 bg-gray-900/70 z-1 md:bg-transparent md:z-0"></div>
         )}
       </div>
     </>
