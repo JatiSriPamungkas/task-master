@@ -15,7 +15,8 @@ export const useGetActiveUser = () => {
 
       const data = await response.json();
 
-      const { first_name, last_name } = data.data[0];
+      const first_name = data.data?.[0]?.first_name ?? "";
+      const last_name = data.data?.[0]?.last_name ?? "";
 
       const nameUser = `${first_name} ${last_name}`;
 

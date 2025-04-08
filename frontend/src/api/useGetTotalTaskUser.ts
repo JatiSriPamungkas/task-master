@@ -1,5 +1,7 @@
 import { useCallback, useState } from "react";
 
+const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
+
 export const useGetTotalTaskUser = () => {
   const [totalTask, setTotalTask] = useState<string>("");
   const [getTotalTaskUserIsLoading, setGetTotalTaskUserIsLoading] =
@@ -14,7 +16,7 @@ export const useGetTotalTaskUser = () => {
       setGetTotalTaskUserIsLoading(true);
 
       const response = await fetch(
-        `http://localhost:3001/api/lists/totalTask/${idUser}`,
+        `${VITE_BASE_URL}/api/lists/totalTask/${idUser}`,
         {
           method: "GET",
         }
@@ -22,7 +24,12 @@ export const useGetTotalTaskUser = () => {
 
       const data = await response.json();
 
-      const dataJSON = data.data;
+      const dataJSON = await data.data;
+
+      if (dataJSON.length === 0) {
+        console.warn("DATA NIHIL CO!");
+        return;
+      }
 
       const count = Object.keys(dataJSON).length;
 

@@ -11,7 +11,7 @@ import {
   Plus,
   Menu,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGetAllTaskList } from "../api/useGetAllTaskList";
 import IsLoading from "../components/IsLoadingModal";
 import { useGetActiveUser } from "../api/useGetActiveUser";
@@ -22,6 +22,8 @@ import { useCreateNewList } from "../api/useCreateNewList";
 import TaskModal from "../components/TaskModal";
 import { useUpdatePriorityUser } from "../api/useUpdatePriorityUser";
 import { useUpdateIsInProgressUser } from "../api/useUpdateIsInProgressUser";
+import BoxDisplay from "../components/BoxDisplay";
+import { useGetColor } from "../hooks/useGetColor";
 
 const HomePage = () => {
   // GET METHOD (refactoring...)
@@ -56,6 +58,8 @@ const HomePage = () => {
   const [idListPriority, setIdListPriority] = useState<string>("");
   const [idListCheck, setIdListCheck] = useState<string>("");
   const [menuActive, setMenuActive] = useState<string>("Dashboard");
+  const isPriorityMounted = useRef<boolean>(true);
+  const isInProgressMounted = useRef<boolean>(true);
 
   const onSubmit = handleSubmit((values) => {
     const idUser = localStorage.getItem("id_user");
@@ -65,28 +69,12 @@ const HomePage = () => {
     reset();
   });
 
-  const getPriorityColor = (idList: string, prevPriority: string) => {
-    switch (selectedPriority[idList] || prevPriority) {
-      case "High":
-        return "border-red-800 bg-red-300 text-red-800";
-      case "Medium":
-        return "border-orange-800 bg-orange-300 text-orange-800";
-      case "Low":
-        return "border-blue-800 bg-blue-300 text-blue-800";
-    }
-  };
+  // OTHERS STATE
+  const { getParentColor, getPriorityColor } = useGetColor({
+    selectedPriority,
+  });
 
-  const getParentColor = (idList: string, prevPriority: string) => {
-    switch (selectedPriority[idList] || prevPriority) {
-      case "High":
-        return "bg-red-100";
-      case "Medium":
-        return "bg-orange-100";
-      case "Low":
-        return "bg-blue-100";
-    }
-  };
-
+  // HANDLE FUNCTION
   const handlePriority = (idList: string, newPriority: string) => {
     setSelectedPriority((prev) => ({
       ...prev,
@@ -129,10 +117,20 @@ const HomePage = () => {
 
   // PATCH EFFECT METHOD
   useEffect(() => {
+    if (isPriorityMounted.current) {
+      isPriorityMounted.current = false;
+      return;
+    }
+
     updatePriorityUser(idListPriority, selectedPriority[idListPriority]);
   }, [idListPriority, selectedPriority, updatePriorityUser]);
 
   useEffect(() => {
+    if (isInProgressMounted.current) {
+      isInProgressMounted.current = false;
+      return;
+    }
+
     const updateStateInProgress = async () => {
       await updateIsInProgressUser(idListCheck, isCheck[idListCheck]);
 
@@ -155,10 +153,10 @@ const HomePage = () => {
         {/* HEADER SECTION */}
         <div className="flex justify-between py-4 px-8 items-center bg-white border-b-2 border-slate-200">
           <div className="flex justify-between items-center gap-4">
-            <a href="">
+            <a href="#">
               <img src={taskMaster} alt="Task Master Logo" width={50} />
             </a>
-            <a href="" className="text-4xl font-medium text-primary">
+            <a href="#" className="text-4xl font-medium text-primary">
               Task Master
             </a>
           </div>
@@ -175,7 +173,7 @@ const HomePage = () => {
         <div className="flex min-h-screen">
           {/* ASIDE SECTION */}
           <div
-            className={`w-0 bg-white md:w-75 md:px-2 py-2 border-r-2 border-slate-200 overflow-hidden transition-all ease duration-500`}
+            className={`w-0 bg-white md:w-100 md:pl-8 md:pr-2 py-2 border-r-2 border-slate-200 overflow-hidden transition-all ease duration-500`}
           >
             <ul className="flex flex-col gap-2 text-sm text-slate-600">
               <li>
@@ -263,6 +261,7 @@ const HomePage = () => {
                 <h1>{menuActive}</h1>
               </div>
 
+              {/* TAB MENU */}
               <div className="my-6">
                 <ul className="flex flex-col gap-4">
                   <li>
@@ -324,6 +323,7 @@ const HomePage = () => {
               </div>
             </div>
 
+            {/* GREETINGS */}
             <div className="flex flex-col gap-4 mt-24 md:mt-0">
               <h1 className="text-4xl text-primary">
                 Welcome back,{" "}
@@ -335,30 +335,29 @@ const HomePage = () => {
                 Here's your overview task for today!
               </p>
             </div>
+
+            {/* DISPLAY TASK */}
             <div className="flex w-full justify-around gap-6 pt-10 h-65">
-              <div className="flex flex-col border-2 border-slate-300 border-solid grow-1 justify-center min-h-32 gap-5 bg-white p-6 rounded-2xl">
-                <div className="flex sm:flex-col-reverse sm:gap-4 lg:flex-row lg:justify-between">
-                  <h3>Total Task</h3>
-                  <ListTodo width={25} />
-                </div>
-                <h1 className="text-6xl">{totalTask}</h1>
-              </div>
-              <div className="flex flex-col border-2 border-slate-300 border-solid grow-1 justify-center min-h-32 gap-5 bg-white  p-6 rounded-2xl">
-                <div className="flex sm:flex-col-reverse sm:gap-4 lg:flex-row lg:justify-between">
-                  <h3>In Progress</h3>
-                  <Loader width={25} />
-                </div>
-                <h1 className="text-6xl">{totalInProgress}</h1>
-              </div>
-              <div className="flex flex-col border-2 border-slate-300 border-solid grow-1 justify-center min-h-32 gap-5 bg-white p-6 rounded-2xl">
-                <div className="flex sm:flex-col-reverse sm:gap-4 lg:flex-row lg:justify-between">
-                  <h3>Completed</h3>
-                  <Check width={25} />
-                </div>
-                <h1 className="text-6xl">{totalCompleted}</h1>
-              </div>
+              <BoxDisplay
+                title="Total Task"
+                Icon={ListTodo}
+                totalTask={totalTask}
+              />
+
+              <BoxDisplay
+                title="In Progress"
+                Icon={Loader}
+                totalTask={totalInProgress}
+              />
+
+              <BoxDisplay
+                title="Completed"
+                Icon={Check}
+                totalTask={totalCompleted}
+              />
             </div>
 
+            {/* LIST TASK */}
             <div className=" box-border flex flex-col w-full mt-10 bg-white min-h-150 border-2 border-slate-300 rounded-2xl">
               <div className="flex justify-between items-center border-b-2 border-slate-300 rounded-2xl p-6 mb-4">
                 <h1 className="text-xl">Today's Task</h1>

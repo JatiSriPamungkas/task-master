@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 export const useGetCompletedTaskUser = () => {
-  const [totalCompleted, setTotalCompleted] = useState<number>(0);
+  const [totalCompleted, setTotalCompleted] = useState<string>("");
   const [getCompletedTaskUserIsLoading, setGetCompletedTaskUserIsLoading] =
     useState<boolean>(false);
   const [getCompletedTaskUserError, setGetCompletedTaskUserError] =
@@ -26,7 +26,7 @@ export const useGetCompletedTaskUser = () => {
 
       const count = Object.keys(dataJSON).length;
 
-      setTotalCompleted(count);
+      setTotalCompleted(count.toString());
     } catch (err) {
       setGetCompletedTaskUserError((err as TypeError).message);
       alert(`Error: ${err}`);
